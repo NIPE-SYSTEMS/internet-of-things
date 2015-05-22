@@ -1,17 +1,17 @@
 # Protocol
 
 - [x] string encoding (UTF-8)
-- [x] CONNECT
-- [ ] CONNACK
-- [ ] PUBLISH
-- [ ] PUBACK
-- [ ] PUBREC
-- [ ] PUBREL
-- [ ] PUBCOMP
-- [ ] SUBSCRIBE
-- [ ] SUBACK
-- [ ] UNSUBSCRIBE
-- [ ] UNSUBACK
-- [ ] PINGREQ
-- [ ] PINGRESP
-- [ ] DISCONNECT
+- [x] CONNECT (request)
+- [ ] CONNACK (response)
+- [ ] PUBLISH (request)
+- [ ] ~~PUBACK (response)~~ (because QoS is 0)
+- [ ] ~~PUBREC (request)~~ (because QoS is 0)
+- [ ] ~~PUBREL (request)~~ (because QoS is 0)
+- [ ] ~~PUBCOMP (request)~~ (because QoS is 0)
+- [ ] SUBSCRIBE (request)
+- [ ] SUBACK (response)
+- [ ] UNSUBSCRIBE (request)
+- [ ] UNSUBACK (response)
+- [ ] PINGREQ (request)
+- [ ] PINGRESP (response)
+- [ ] DISCONNECT (request) (must not be implemented, because sensors are always online)
