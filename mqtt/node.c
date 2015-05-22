@@ -50,7 +50,12 @@ int main(void)
 	offset = 10;
 	
 	// append data to buffer
-	mqtt_encode_string(buffer, &offset, "Hello World!", 12);
+	mqtt_string_encode(buffer, &offset, "Hello World!", 12);
+	mqtt_control_packet_fixed_header(buffer, &offset, PUBLISH, 0, 0, 0);
+	mqtt_control_packet_fixed_header(buffer, &offset, PUBLISH, 1, 0, 0);
+	mqtt_control_packet_fixed_header(buffer, &offset, PUBLISH, 1, 2, 0);
+	mqtt_control_packet_fixed_header(buffer, &offset, PUBLISH, 1, 1, 1);
+	mqtt_control_packet_fixed_header(buffer, &offset, CONNECT, 1, 1, 1);
 	
 	// output buffer
 	for(i = 0; i < 32; i++)
