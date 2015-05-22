@@ -1,4 +1,4 @@
-# Protocol
+# Implementation status of the MQTT-Protocol for a node
 
 - [x] string encoding (UTF-8)
 - [x] CONNECT (request)
@@ -14,4 +14,4 @@
 - [ ] UNSUBACK (response)
 - [ ] PINGREQ (request)
 - [ ] PINGRESP (response)
-- [ ] DISCONNECT (request) (must not be implemented, because nodes are always online)
+- [ ] ~~DISCONNECT (request)~~ (must not be implemented, because nodes are always online)
