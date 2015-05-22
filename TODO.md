@@ -15,3 +15,4 @@
 - [ ] PINGREQ (request)
 - [ ] PINGRESP (response)
 - [ ] ~~DISCONNECT (request)~~ (must not be implemented, because nodes are always online)
+- [ ] Packet Identifiers

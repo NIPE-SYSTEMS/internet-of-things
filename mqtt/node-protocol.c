@@ -117,16 +117,23 @@ static unsigned int mqtt_publish_measure_variable_and_payload(char *topic_name, 
  * @return The calculated remaining length of the variable header and the
  * payload.
  */
-static unsigned int mqtt_subscribe_measure_variable_and_payload(char *topic_filter)
+static unsigned int mqtt_subscribe_measure_variable_and_payload(subscribed_topics_t *subscribed_topics, unsigned int subscribed_topics_length)
 {
 	unsigned int measured_size = 0;
+	unsigned int i = 0;
 	
 	// measure variable header
 	measured_size += 2; // Packet Identifier
 	
 	// measure payload
-	measured_size += strlen(topic_filter) + 2; // Topic filter
-	measured_size += 1;
+	for(i = 0; i < subscribed_topics_length; i++)
+	{
+		if(subscribed_topics[i].topic_name != NULL)
+		{
+			measured_size += strlen(subscribed_topics[i].topic_name) + 2; // Topic filter
+			measured_size += 1;
+		}
+	}
 	
 	return measured_size;
 }
@@ -312,4 +319,58 @@ void mqtt_message_publish(char *buffer, unsigned int *offset, char retain, char 
 	
 	// payload
 	mqtt_string_encode(buffer, offset, payload, strlen(payload));
+}
+
+/**
+ * Writes a PUBLISH control packet to the buffer.
+ * @param buffer The buffer to which the string will be copied. The buffer must
+ * be allocated (array with fixed size is recommended).
+ * @param offset Skip this amount of bytes from the start of buffer.
+ * @param retain The Retain flag. 1 means TRUE.
+ * @param topic_name The Topic Name.
+ * @param payload The Payload of the PUBLISH.
+ */
+void mqtt_message_subscribe(char *buffer, unsigned int *offset, subscribed_topics_t *subscribed_topics, unsigned int subscribed_topics_length)
+{
+	unsigned int measured_size = 0;
+	char remaining_length_encoded_byte = 0;
+	unsigned int i = 0;
+	
+	if(buffer == NULL || subscribed_topics == NULL)
+	{
+		return;
+	}
+	
+	// measure size of variable header and payload
+	measured_size = mqtt_subscribe_measure_variable_and_payload(subscribed_topics, subscribed_topics_length);
+	
+	// fixed header
+	buffer[(*offset)++] = (8 << 4) + (1 << 1);
+	
+	do
+	{
+		remaining_length_encoded_byte = measured_size % 128;
+		measured_size /= 128;
+		// if there is more data to encode, set the top bit of this byte
+		if(measured_size > 0)
+		{
+			remaining_length_encoded_byte |= 128;
+		}
+		buffer[(*offset)++] = remaining_length_encoded_byte;
+	}
+	while(measured_size > 0);
+	
+	// variable header
+	buffer[(*offset)++] = 0;
+	buffer[(*offset)++] = 0;
+	
+	// payload
+	for(i = 0; i < subscribed_topics_length; i++)
+	{
+		if(subscribed_topics[i].topic_name != NULL)
+		{
+			mqtt_string_encode(buffer, offset, subscribed_topics[i].topic_name, strlen(subscribed_topics[i].topic_name));
+			buffer[(*offset)++] = 0;
+		}
+	}
 }

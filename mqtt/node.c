@@ -39,6 +39,11 @@ int main(void)
 	char buffer[128];
 	unsigned int offset = 0;
 	unsigned int i = 0;
+	subscribed_topics_t subscribed_topics[] =
+	{
+		{ "a/b", NULL },
+		{ "c/d", NULL }
+	};
 	
 	// initialize buffer
 	for(i = 0; i < 128; i++)
@@ -46,24 +51,7 @@ int main(void)
 		buffer[i] = 0;
 	}
 	
-	mqtt_message_connect(buffer, &offset, 0, 0, "CLIENT", "Will Topic", "Will Message", NULL, NULL, 122);
-	
-	// output buffer
-	for(i = 0; i < offset; i++)
-	{
-		print_byte(buffer[i]);
-	}
-	
-	printf("\n");
-	
-	// initialize buffer
-	offset = 0;
-	for(i = 0; i < 128; i++)
-	{
-		buffer[i] = 0;
-	}
-	
-	mqtt_message_publish(buffer, &offset, 0, "a/b", "Payload");
+	mqtt_message_subscribe(buffer, &offset, subscribed_topics, sizeof(subscribed_topics) / sizeof(subscribed_topics[0]));
 	
 	// output buffer
 	for(i = 0; i < offset; i++)
