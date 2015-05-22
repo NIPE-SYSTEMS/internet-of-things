@@ -17,6 +17,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "node-protocol.h"
 
 /**
@@ -54,49 +55,6 @@ void mqtt_string_encode(char *buffer, unsigned int *offset, char *string, unsign
 }
 
 /**
- * Generates a control packet fixed header and appends it to the buffer.
- * @param buffer The buffer to which the string will be copied. The buffer must
- * be allocated (array with fixed size is recommended).
- * @param offset Skip this amount of bytes from the start of buffer.
- * @param type The control message type.
- * @param duplicate 1 means: Duplicate delivery of a PUBLISH Control Packet, 0
- * means not; only relevant for PUBLISH type, will be ignored otherwise
- * @param qos PUBLISH Quality of Service; only relevant for PUBLISH type, will
- * be ignored otherwise
- * @param retain 1 means: PUBLISH Retain flag, 0 means not; only relevant for
- * PUBLISH type, will be ignored otherwise
- */
-void mqtt_control_packet_fixed_header(char *buffer, unsigned int *offset, control_message_type_t type, char duplicate, char qos, char retain)
-{
-	char type_and_flags = 0;
-	
-	if(buffer == NULL)
-	{
-		return;
-	}
-	
-	// generate first byte (control packet type and control packet flags)
-	type_and_flags = type << 4;
-	
-	if(type == PUBLISH)
-	{
-		if((duplicate == 0 || duplicate == 1) && (qos == 0 || qos == 1 || qos == 2) && (retain == 0 || retain == 1))
-		{
-			type_and_flags += duplicate << 3;
-			type_and_flags += qos << 1;
-			type_and_flags += retain;
-		}
-	}
-	else if(type == PUBREL || type == SUBSCRIBE || type == UNSUBSCRIBE)
-	{
-		type_and_flags += 1 << 1;
-	}
-	
-	// append first byte
-	buffer[(*offset)++] = type_and_flags;
-}
-
-/**
  * Measures the remaining length of the variable header and the payload. This is
  * used in the fixed header of the CONNECT control packet.
  * @param client_id The ClientId of the client.
@@ -107,7 +65,7 @@ void mqtt_control_packet_fixed_header(char *buffer, unsigned int *offset, contro
  * @return The calculated remaining length of the variable header and the
  * payload.
  */
-unsigned int mqtt_connect_measure_variable_and_payload(char *client_id, char *will_topic, char *will_message, char *username, char *password)
+static unsigned int mqtt_connect_measure_variable_and_payload(char *client_id, char *will_topic, char *will_message, char *username, char *password)
 {
 	unsigned int measured_size = 0;
 	
@@ -134,7 +92,7 @@ unsigned int mqtt_connect_measure_variable_and_payload(char *client_id, char *wi
  * @return The calculated remaining length of the variable header and the
  * payload.
  */
-unsigned int mqtt_subscribe_measure_variable_and_payload(char *topic_filter)
+static unsigned int mqtt_subscribe_measure_variable_and_payload(char *topic_filter)
 {
 	unsigned int measured_size = 0;
 	
@@ -155,7 +113,7 @@ unsigned int mqtt_subscribe_measure_variable_and_payload(char *topic_filter)
  * @return The calculated remaining length of the variable header and the
  * payload.
  */
-unsigned int mqtt_unsubscribe_measure_variable_and_payload(char *topic_filter)
+static unsigned int mqtt_unsubscribe_measure_variable_and_payload(char *topic_filter)
 {
 	unsigned int measured_size = 0;
 	
@@ -255,4 +213,26 @@ void mqtt_message_connect(char *buffer, unsigned int *offset, char will_retain, 
 	buffer[(*offset)++] = connect_flags_byte; // Connect Flags
 	buffer[(*offset)++] = (keep_alive >> 8) & 0xFF; // Keep Alive
 	buffer[(*offset)++] = keep_alive & 0xFF; // Keep Alive
+	
+	mqtt_string_encode(buffer, offset, client_id, strlen(client_id));
+	
+	if(will_topic != NULL)
+	{
+		mqtt_string_encode(buffer, offset, will_topic, strlen(will_topic));
+	}
+	
+	if(will_message != NULL)
+	{
+		mqtt_string_encode(buffer, offset, will_message, strlen(will_message));
+	}
+	
+	if(username != NULL)
+	{
+		mqtt_string_encode(buffer, offset, username, strlen(username));
+	}
+	
+	if(password != NULL)
+	{
+		mqtt_string_encode(buffer, offset, password, strlen(password));
+	}
 }

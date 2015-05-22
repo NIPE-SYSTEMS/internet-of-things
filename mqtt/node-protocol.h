@@ -18,10 +18,7 @@
 #ifndef __NODE_PROTOCOL_H__
 #define __NODE_PROTOCOL_H__
 
-/** Control message type */
-typedef enum { CONNECT = 1, CONNACK, PUBLISH, PUBACK, PUBREC, PUBREL, PUBCOMP, SUBSCRIBE, SUBACK, UNSUBSCRIBE, UNSUBACK, PINGREQ, PINGRESP, DISCONNECT } control_message_type_t;
-
 void mqtt_string_encode(char *buffer, unsigned int *offset, char *string, unsigned int string_length);
-void mqtt_control_packet_fixed_header(char *buffer, unsigned int *offset, control_message_type_t type, char duplicate, char qos, char retain);
+void mqtt_message_connect(char *buffer, unsigned int *offset, char will_retain, char will_qos, char clean_session, char *client_id, char *will_topic, char *will_message, char *username, char *password, unsigned int keep_alive);
 
 #endif /* __NODE_PROTOCOL_H__ */
