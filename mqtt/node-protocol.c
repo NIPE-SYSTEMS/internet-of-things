@@ -87,6 +87,31 @@ static unsigned int mqtt_connect_measure_variable_and_payload(char *client_id, c
 
 /**
  * Measures the remaining length of the variable header and the payload. This is
+ * used in the fixed header of the PUBLISH control packet.
+ * @param client_id The ClientId of the client.
+ * @param will_topic The Will Topic. This variable can be NULL.
+ * @param will_message The Will Topic. This variable can be NULL.
+ * @param username The Will Topic. This variable can be NULL.
+ * @param password The Will Topic. This variable can be NULL.
+ * @return The calculated remaining length of the variable header and the
+ * payload.
+ */
+static unsigned int mqtt_publish_measure_variable_and_payload(char *topic_name, char *payload)
+{
+	unsigned int measured_size = 0;
+	
+	// measure variable header
+	measured_size += strlen(topic_name) + 2; // Topic Name
+	// (No Packet Identifier)
+	
+	// measure payload
+	measured_size += strlen(payload) + 2; // Payload
+	
+	return measured_size;
+}
+
+/**
+ * Measures the remaining length of the variable header and the payload. This is
  * used in the fixed header of the SUBSCRIBE control packet.
  * @param topic_filter The Topic Filter to subscribe.
  * @return The calculated remaining length of the variable header and the
@@ -142,7 +167,7 @@ static unsigned int mqtt_unsubscribe_measure_variable_and_payload(char *topic_fi
  * @param password The Will Topic. This variable can be NULL.
  * @param keep_alive The Keep Alive.
  */
-void mqtt_message_connect(char *buffer, unsigned int *offset, char will_retain, char will_qos, char clean_session, char *client_id, char *will_topic, char *will_message, char *username, char *password, unsigned int keep_alive)
+void mqtt_message_connect(char *buffer, unsigned int *offset, char will_retain, char clean_session, char *client_id, char *will_topic, char *will_message, char *username, char *password, unsigned int keep_alive)
 {
 	unsigned int measured_size = 0;
 	char remaining_length_encoded_byte = 0;
@@ -195,10 +220,10 @@ void mqtt_message_connect(char *buffer, unsigned int *offset, char will_retain, 
 		connect_flags_byte += 1 << 5;
 	}
 	
-	if(will_qos == 0 || will_qos == 1 || will_qos == 2)
-	{
-		connect_flags_byte += will_qos << 3;
-	}
+	// if(will_qos == 0 || will_qos == 1 || will_qos == 2)
+	// {
+	// 	connect_flags_byte += will_qos << 3;
+	// }
 	
 	if(will_topic != NULL && will_message != NULL)
 	{
@@ -235,4 +260,56 @@ void mqtt_message_connect(char *buffer, unsigned int *offset, char will_retain, 
 	{
 		mqtt_string_encode(buffer, offset, password, strlen(password));
 	}
+}
+
+/**
+ * Writes a PUBLISH control packet to the buffer.
+ * @param buffer The buffer to which the string will be copied. The buffer must
+ * be allocated (array with fixed size is recommended).
+ * @param offset Skip this amount of bytes from the start of buffer.
+ * @param retain The Retain flag. 1 means TRUE.
+ * @param topic_name The Topic Name.
+ * @param payload The Payload of the PUBLISH.
+ */
+void mqtt_message_publish(char *buffer, unsigned int *offset, char retain, char *topic_name, char *payload)
+{
+	unsigned int measured_size = 0;
+	char remaining_length_encoded_byte = 0;
+	
+	if(buffer == NULL || topic_name == NULL || payload == NULL)
+	{
+		return;
+	}
+	
+	// measure size of variable header and payload
+	measured_size = mqtt_publish_measure_variable_and_payload(topic_name, payload);
+	
+	// fixed header
+	if(retain == 1)
+	{
+		buffer[(*offset)++] = (3 << 4) + 1;
+	}
+	else
+	{
+		buffer[(*offset)++] = 3 << 4;
+	}
+	
+	do
+	{
+		remaining_length_encoded_byte = measured_size % 128;
+		measured_size /= 128;
+		// if there is more data to encode, set the top bit of this byte
+		if(measured_size > 0)
+		{
+			remaining_length_encoded_byte |= 128;
+		}
+		buffer[(*offset)++] = remaining_length_encoded_byte;
+	}
+	while(measured_size > 0);
+	
+	// variable header
+	mqtt_string_encode(buffer, offset, topic_name, strlen(topic_name));
+	
+	// payload
+	mqtt_string_encode(buffer, offset, payload, strlen(payload));
 }

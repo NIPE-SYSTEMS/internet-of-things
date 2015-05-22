@@ -19,6 +19,7 @@
 #define __NODE_PROTOCOL_H__
 
 void mqtt_string_encode(char *buffer, unsigned int *offset, char *string, unsigned int string_length);
-void mqtt_message_connect(char *buffer, unsigned int *offset, char will_retain, char will_qos, char clean_session, char *client_id, char *will_topic, char *will_message, char *username, char *password, unsigned int keep_alive);
+void mqtt_message_connect(char *buffer, unsigned int *offset, char will_retain, char clean_session, char *client_id, char *will_topic, char *will_message, char *username, char *password, unsigned int keep_alive);
+void mqtt_message_publish(char *buffer, unsigned int *offset, char retain, char *topic_name, char *payload);
 
 #endif /* __NODE_PROTOCOL_H__ */

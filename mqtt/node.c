@@ -46,10 +46,27 @@ int main(void)
 		buffer[i] = 0;
 	}
 	
-	mqtt_message_connect(buffer, &offset, 0, 0, 0, "CLIENT", "Will Topic", "Will Message", "Username", "Password", 120);
+	mqtt_message_connect(buffer, &offset, 0, 0, "CLIENT", "Will Topic", "Will Message", NULL, NULL, 122);
 	
 	// output buffer
+	for(i = 0; i < offset; i++)
+	{
+		print_byte(buffer[i]);
+	}
+	
+	printf("\n");
+	
+	// initialize buffer
+	offset = 0;
 	for(i = 0; i < 128; i++)
+	{
+		buffer[i] = 0;
+	}
+	
+	mqtt_message_publish(buffer, &offset, 0, "a/b", "Payload");
+	
+	// output buffer
+	for(i = 0; i < offset; i++)
 	{
 		print_byte(buffer[i]);
 	}
