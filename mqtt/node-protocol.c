@@ -322,13 +322,12 @@ void mqtt_message_publish(char *buffer, unsigned int *offset, char retain, char 
 }
 
 /**
- * Writes a PUBLISH control packet to the buffer.
+ * Writes a SUBSCRIBE control packet to the buffer.
  * @param buffer The buffer to which the string will be copied. The buffer must
  * be allocated (array with fixed size is recommended).
  * @param offset Skip this amount of bytes from the start of buffer.
- * @param retain The Retain flag. 1 means TRUE.
- * @param topic_name The Topic Name.
- * @param payload The Payload of the PUBLISH.
+ * @param subscribed_topics A list of topics which should be subscribed.
+ * @param topic_name The length of the topic list.
  */
 void mqtt_message_subscribe(char *buffer, unsigned int *offset, subscribed_topics_t *subscribed_topics, unsigned int subscribed_topics_length)
 {
