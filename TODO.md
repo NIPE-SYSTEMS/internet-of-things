@@ -8,7 +8,7 @@
 - [ ] ~~PUBREC (request)~~ (because QoS is 0)
 - [ ] ~~PUBREL (request)~~ (because QoS is 0)
 - [ ] ~~PUBCOMP (request)~~ (because QoS is 0)
-- [ ] SUBSCRIBE (request)
+- [x] SUBSCRIBE (request)
 - [ ] SUBACK (response)
 - [ ] UNSUBSCRIBE (request)
 - [ ] UNSUBACK (response)
