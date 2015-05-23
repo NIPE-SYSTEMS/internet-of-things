@@ -391,3 +391,26 @@ void mqtt_message_pingreq(char *buffer, unsigned int *offset)
 	buffer[(*offset)++] = 12 << 4;
 	buffer[(*offset)++] = 0;
 }
+
+/**
+ * Parses an incoming MQTT control packet byte by byte.
+ * @param received_byte The received byte.
+ */
+void mqtt_parse_byte(char byte)
+{
+	static char type_received = 0;
+	static char fixed_header_received = 0;
+	static char variable_header_received = 0;
+	static char payload_received = 0;
+	static char control_packet_received = 0;
+	
+	static char control_packet_type = 0;
+	
+	if(type_received == 0)
+	{
+		if(byte > 0 && byte < 15)
+		{
+			
+		}
+	}
+}

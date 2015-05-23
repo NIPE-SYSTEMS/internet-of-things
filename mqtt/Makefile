@@ -31,8 +31,8 @@ all: node
 
 # Compile main program
 
-node: init bin/obj/node.o bin/obj/node-protocol.o
-	$(CC) bin/obj/node.o bin/obj/node-protocol.o $(CFLAGS) -o bin/node $(LIBS)
+node: init bin/obj/node.o bin/obj/node-mqtt-sn.o
+	$(CC) bin/obj/node.o bin/obj/node-mqtt-sn.o $(CFLAGS) -o bin/node $(LIBS)
 
 # Initializes directories
 
@@ -45,8 +45,8 @@ init:
 bin/obj/node.o: node.c
 	$(CC) $(CFLAGS) -c -o bin/obj/node.o node.c $(LIBS)
 
-bin/obj/node-protocol.o: node-protocol.c
-	$(CC) $(CFLAGS) -c -o bin/obj/node-protocol.o node-protocol.c $(LIBS)
+bin/obj/node-mqtt-sn.o: node-mqtt-sn.c
+	$(CC) $(CFLAGS) -c -o bin/obj/node-mqtt-sn.o node-mqtt-sn.c $(LIBS)
 
 # Clean
 

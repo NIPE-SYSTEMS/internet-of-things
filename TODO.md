@@ -3,7 +3,7 @@
 - [x] string encoding (UTF-8)
 - [x] CONNECT (request)
 - [ ] CONNACK (response)
-- [x] PUBLISH (request)
+- [x] PUBLISH (request, response)
 - [ ] ~~PUBACK (response)~~ (because QoS is 0)
 - [ ] ~~PUBREC (request)~~ (because QoS is 0)
 - [ ] ~~PUBREL (request)~~ (because QoS is 0)
