@@ -51,7 +51,7 @@ int main(void)
 		buffer[i] = 0;
 	}
 	
-	mqtt_message_subscribe(buffer, &offset, subscribed_topics, sizeof(subscribed_topics) / sizeof(subscribed_topics[0]));
+	mqtt_message_pingreq(buffer, &offset);
 	
 	// output buffer
 	for(i = 0; i < offset; i++)

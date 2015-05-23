@@ -12,7 +12,7 @@
 - [ ] SUBACK (response)
 - [ ] ~~UNSUBSCRIBE (request)~~ (must not be implemented, because nodes are always online and subscribe topics once)
 - [ ] ~~UNSUBACK (response)~~ (must not be implemented, because nodes are always online and subscribe topics once)
-- [ ] PINGREQ (request)
+- [x] PINGREQ (request)
 - [ ] PINGRESP (response)
 - [ ] ~~DISCONNECT (request)~~ (must not be implemented, because nodes are always online)
 - [ ] Packet Identifiers

@@ -28,5 +28,6 @@ void mqtt_string_encode(char *buffer, unsigned int *offset, char *string, unsign
 void mqtt_message_connect(char *buffer, unsigned int *offset, char will_retain, char clean_session, char *client_id, char *will_topic, char *will_message, char *username, char *password, unsigned int keep_alive);
 void mqtt_message_publish(char *buffer, unsigned int *offset, char retain, char *topic_name, char *payload);
 void mqtt_message_subscribe(char *buffer, unsigned int *offset, subscribed_topics_t *subscribed_topics, unsigned int subscribed_topics_length);
+void mqtt_message_pingreq(char *buffer, unsigned int *offset);
 
 #endif /* __NODE_PROTOCOL_H__ */

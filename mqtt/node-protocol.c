@@ -373,3 +373,21 @@ void mqtt_message_subscribe(char *buffer, unsigned int *offset, subscribed_topic
 		}
 	}
 }
+
+/**
+ * Writes a PINGREQ control packet to the buffer.
+ * @param buffer The buffer to which the string will be copied. The buffer must
+ * be allocated (array with fixed size is recommended).
+ * @param offset Skip this amount of bytes from the start of buffer.
+ */
+void mqtt_message_pingreq(char *buffer, unsigned int *offset)
+{
+	if(buffer == NULL)
+	{
+		return;
+	}
+	
+	// fixed header
+	buffer[(*offset)++] = 12 << 4;
+	buffer[(*offset)++] = 0;
+}
