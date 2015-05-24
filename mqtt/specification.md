@@ -2,11 +2,11 @@
 
 ## Introduction
 
-This specification defines a protocol which is used to communicate between nodes in a multinode network. It uses a subset of the MQTT-protocol (specification: [http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html), date of link: 15-05-24) and the MQTT-SN-protocol (specification: [http://mqtt.org/new/wp-content/uploads/2009/06/MQTT-SN_spec_v1.2.pdf](http://mqtt.org/new/wp-content/uploads/2009/06/MQTT-SN_spec_v1.2.pdf), date of link: 15-05-24). It aims to the target of MQTT which is a pushing-, not a polling network. The nodes can subscribe to topics and will then get all messages of this topic.
+This specification defines a protocol which can be used to communicate between nodes in a multinode network. It uses a subset of the MQTT-protocol (specification: [http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html), date of link: 15-05-24) and the MQTT-SN-protocol (specification: [http://mqtt.org/new/wp-content/uploads/2009/06/MQTT-SN_spec_v1.2.pdf](http://mqtt.org/new/wp-content/uploads/2009/06/MQTT-SN_spec_v1.2.pdf), date of link: 15-05-24). The protocol aims to the target of MQTT which is a pushing-, not a polling network. The nodes can subscribe to topics and will then get all messages of this topic.
 
-## Network Structure
+## Network Topology
 
-The network structure is a star-structure. The gateway is the center of the network.
+The network topology is a Star Network ([Wikipedia: Star Network](https://en.wikipedia.org/wiki/Star_network)). The gateway is the center of the network.
 
                 [ Node 1 ]  [ Node 2]
                      \         /
@@ -16,7 +16,7 @@ The network structure is a star-structure. The gateway is the center of the netw
                      /         \
                 [ Node 5 ]  [ Node 4 ]
 
-The gateway is also connected with a real MQTT network. Every message received by the gateway will be modified that the message can be sent to the real MQTT-Broker. In other words it is translated from this protocol to the MQTT protocol and also the other way round. From the MQTT network the nodes are talking to one node, the gateway. The gateway opens only one TCP/UDP connection to the MQTT-Broker.
+The gateway is also connected with a real MQTT network. Every message received by the gateway will be modified that the message can be sent to a real MQTT-Broker. In other words it is translated from this protocol to the MQTT protocol and also the other way round. From the MQTT network the nodes are talking to one node, the gateway. The gateway opens only one TCP/UDP connection to the MQTT-Broker.
 
 ## General Remarks
 
