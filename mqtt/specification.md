@@ -1,4 +1,22 @@
-# Specification of a MQTT subset for the CAN-Bus
+# Specification of a MQTT subset for a multinode network
+
+## Introduction
+
+This specification defines a protocol which is used to communicate between nodes in a multinode network. It uses a subset of the MQTT-protocol (specification: [http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html), date of link: 15-05-24) and the MQTT-SN-protocol (specification: [http://mqtt.org/new/wp-content/uploads/2009/06/MQTT-SN_spec_v1.2.pdf](http://mqtt.org/new/wp-content/uploads/2009/06/MQTT-SN_spec_v1.2.pdf), date of link: 15-05-24). It aims to the target of MQTT which is a pushing-, not a polling network. The nodes can subscribe to topics and will then get all messages of this topic.
+
+## Network Structure
+
+The network structure is a star-structure. The gateway is the center of the network.
+
+                [ Node 1 ]  [ Node 2]
+                     \         /
+                       \     /
+    MQTT network <-> [ Gateway ] ----- [ Node 3 ]
+                       /     \
+                     /         \
+                [ Node 5 ]  [ Node 4 ]
+
+The gateway is also connected with a real MQTT network. Every message received by the gateway will be modified that the message can be sent to the real MQTT-Broker. From the MQTT network the nodes are talking to one node, the gateway. The gateway opens only one TCP/UDP connection to the MQTT-Broker.
 
 ## General Remarks
 
@@ -54,7 +72,9 @@ The *Message Body* part of a message depends on the type of the message.
 
 #### CONNECT
 
-The *CONNECT* message is sent by a node to setup a connection.
+The *CONNECT* message is sent by a node to setup a connection. The message is used to register the node in the node network. The *CONNECT* message is not forwarded to the real MQTT-Broker.
+
+##### CONNECT Format
 
 * Message Header
     * Address (node address)
@@ -75,6 +95,8 @@ The *Client Id* is a UTF-8 encoded string. Its length is described by the length
 #### CONNACK
 
 The *CONNACK* message is sent by a gateway to notify the client that the *CONNECT* message was successful or not.
+
+##### CONNACK Format
 
 * Message Header
     * Address (node address)
@@ -97,6 +119,8 @@ More specific *Return Code* values may be added in the future.
 #### PUBLISH
 
 The *PUBLISH* message is sent by both a node and a gateway. The node can publish a message which will be transported to the MQTT-Broker. If the MQTT-Broker has a message for a subscribed topic of the node the gateway forwards this message to the node. A *PUBLISH* message coming from a node has the node address in the *Address* field. The message coming from the gateway has also the node address in the *Address* field.
+
+##### PUBLISH Format
 
 * Message Header
     * Address (node address)
@@ -127,6 +151,8 @@ The *Message Data* field represents the real data of the published message as UT
 
 The *SUBSCRIBE* message is sent by a node to subsribe to specified topics. It is possible to subscribe to multiple topics with one *SUBSCRIBE* message. The sent topics are translated by the gateway in topic IDs. The gateway subscribes then to the topics of the real MQTT-Broker und waits for the response. If the gateway receives a response it will send a *SUBACK* message into the bus. This *SUBACK* message is addressed to the node which had sent the original message. The gateway creates for every new topic a topic ID which should be stored at the gateway as a kind of translation dictionary to translate topic ID back into topic names or the other way round.
 
+##### SUBSCRIBE Format
+
 * Message Header
     * Address (node address)
     * Length
@@ -147,6 +173,8 @@ A message ID may be added in the future to allow multiple *SUBSCRIBE* message op
 
 The *SUBACK* message is sent by the gateway to respond to a *SUBSCRIBE* message of a node. The response contains of the generated topic IDs which can then be used for e.g. *PUBLISH* messages.
 
+##### SUBACK Format
+
 * Message Header
     * Address (node address)
     * Length
@@ -165,6 +193,8 @@ The *PINGREQ* message is sent by a node to check if the connection is alive. The
 
 Currently no tolerance is given with the *Keep Alive* feature. This means that the node must send the *PINGREQ* message before the *Keep Alive* timeout exceeds. This may be changed in the future.
 
+##### PINGREQ Format
+
 * Message Header
     * Address (node address)
     * Length
@@ -174,7 +204,9 @@ Currently no tolerance is given with the *Keep Alive* feature. This means that t
 
 #### PINGRESP
 
-The *PINGREQP* message is sent by the gateway. The message means "I confirm that the network and the node are up".
+The *PINGREQP* message is sent by the gateway. With this message the gateway confirms the node that the network is up and that the node is also up.
+
+##### PINGRESP Format
 
 * Message Header
     * Address (node address)
