@@ -16,7 +16,7 @@ The network structure is a star-structure. The gateway is the center of the netw
                      /         \
                 [ Node 5 ]  [ Node 4 ]
 
-The gateway is also connected with a real MQTT network. Every message received by the gateway will be modified that the message can be sent to the real MQTT-Broker. From the MQTT network the nodes are talking to one node, the gateway. The gateway opens only one TCP/UDP connection to the MQTT-Broker.
+The gateway is also connected with a real MQTT network. Every message received by the gateway will be modified that the message can be sent to the real MQTT-Broker. In other words it is translated from this protocol to the MQTT protocol and also the other way round. From the MQTT network the nodes are talking to one node, the gateway. The gateway opens only one TCP/UDP connection to the MQTT-Broker.
 
 ## General Remarks
 
