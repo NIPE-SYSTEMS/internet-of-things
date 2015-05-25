@@ -61,42 +61,42 @@ int main(void)
 	// }
 	
 	// CONNACK parsing
-	mqtt_read(16);
-	mqtt_read(4);
-	mqtt_read(0x01);
-	mqtt_read(0x01);
+	mqtt_read(16); // Address
+	mqtt_read(4); // Length
+	mqtt_read(0x01); // Message Type
+	mqtt_read(0x01); // Return Code
 	
 	// PUBLISH parsing
-	mqtt_read(16);
-	mqtt_read(9);
-	mqtt_read(0x02);
-	mqtt_read(0x01);
-	mqtt_read(0x01);
-	mqtt_read(0x00);
-	mqtt_read('a');
-	mqtt_read('b');
-	mqtt_read('c');
+	mqtt_read(16); // Address
+	mqtt_read(9); // Length
+	mqtt_read(0x02); // Message Type
+	mqtt_read(0x01); // Flags
+	mqtt_read(0x01); // Topic Id
+	mqtt_read(0x00); // Topic Id
+	mqtt_read('a'); // Message Data
+	mqtt_read('b'); // Message Data
+	mqtt_read('c'); // Message Data
 	
 	// SUBACK parsing
-	mqtt_read(16);
-	mqtt_read(9);
-	mqtt_read(0x04);
-	mqtt_read(0x16);
-	mqtt_read(0x00);
-	mqtt_read(0x01);
-	mqtt_read(0x00);
-	mqtt_read(0x01);
-	mqtt_read(0x03);
+	mqtt_read(16); // Address
+	mqtt_read(9); // Length
+	mqtt_read(0x04); // Message Type
+	mqtt_read(0x16); // Topic Id
+	mqtt_read(0x00); // Topic Id
+	mqtt_read(0x01); // Topic Id
+	mqtt_read(0x00); // Topic Id
+	mqtt_read(0x01); // Topic Id
+	mqtt_read(0x03); // Topic Id
 	
 	// PINGREQ parsing
-	mqtt_read(16);
-	mqtt_read(3);
-	mqtt_read(0x05);
+	mqtt_read(16); // Address
+	mqtt_read(3); // Length
+	mqtt_read(0x05); // Message Type
 	
 	// PINGRESP parsing
-	mqtt_read(16);
-	mqtt_read(3);
-	mqtt_read(0x06);
+	mqtt_read(16); // Address
+	mqtt_read(3); // Length
+	mqtt_read(0x06); // Message Type
 	
 	return 0;
 }
