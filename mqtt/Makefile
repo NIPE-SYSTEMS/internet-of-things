@@ -13,26 +13,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-CC = gcc
+MCU = atmega8
+F_CPU = 16000000UL
 
-CFLAGS += -Wall
-CFLAGS += -Wextra
-# CFLAGS += `pkg-config --cflags libsoup-2.4`
-# CFLAGS += `pkg-config --cflags json-glib-1.0`
-# CFLAGS += `pkg-config --cflags gio-2.0`
-
-# LIBS += `pkg-config --libs libsoup-2.4`
-# LIBS += `pkg-config --libs json-glib-1.0`
-# LIBS += `pkg-config --libs gio-2.0`
-
-.PHONY: all node init clean
+.PHONY: all node node-program init clean
 
 all: node
 
-# Compile main program
+# Compile node program
 
 node: init bin/obj/node.o bin/obj/node-mqtt-subset.o
-	$(CC) bin/obj/node.o bin/obj/node-mqtt-subset.o $(CFLAGS) -o bin/node $(LIBS)
+	avr-gcc -mmcu=$(MCU) -I. -gdwarf-2 -DF_CPU=$(F_CPU) -O1 -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -Wall -Wstrict-prototypes -Wundef -o bin/node.elf bin/obj/node.o bin/obj/node-mqtt-subset.o -lm
+	avr-objcopy -O ihex -R .eeprom bin/node.elf bin/node.hex
+	@echo
+	@avr-size --mcu=$(MCU) --format=avr bin/node.elf
+
+# Flash node program
+
+node-program: node
+	avrdude -p $(MCU) -P usbasp -c usbasp -U flash:w:bin/node.hex
 
 # Initializes directories
 
@@ -40,13 +39,11 @@ init:
 	mkdir -p bin
 	mkdir -p bin/obj
 
-# C-objects
-
 bin/obj/node.o: node.c
-	$(CC) $(CFLAGS) -c -o bin/obj/node.o node.c $(LIBS)
+	avr-gcc -c -mmcu=$(MCU) -I. -gdwarf-2 -DF_CPU=$(F_CPU) -O1 -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -Wall -Wstrict-prototypes -Wundef -o bin/obj/node.o node.c
 
 bin/obj/node-mqtt-subset.o: node-mqtt-subset.c
-	$(CC) $(CFLAGS) -c -o bin/obj/node-mqtt-subset.o node-mqtt-subset.c $(LIBS)
+	avr-gcc -c -mmcu=$(MCU) -I. -gdwarf-2 -DF_CPU=$(F_CPU) -O1 -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -Wall -Wstrict-prototypes -Wundef -o bin/obj/node-mqtt-subset.o node-mqtt-subset.c
 
 # Clean
 

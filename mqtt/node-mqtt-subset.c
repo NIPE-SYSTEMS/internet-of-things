@@ -16,8 +16,9 @@
  */
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
+#include <avr/io.h>
+#include <util/delay.h>
 #include "node-mqtt-subset.h"
 
 static unsigned char mqtt_sub_topics_length = 3;
@@ -217,7 +218,7 @@ void mqtt_read(char received_byte)
 	static unsigned int message_suback_topic_ids[32];
 	static unsigned char message_suback_topic_ids_length = 0;
 	
-	// printf("%i: %i\n", received_byte_index, received_byte);
+	// //printf("%i: %i\n", received_byte_index, received_byte);
 	
 	if(received_byte_index == 0) // Address
 	{
@@ -231,15 +232,15 @@ void mqtt_read(char received_byte)
 	{
 		message_type = received_byte;
 		
-		printf("Received message header: address = %i, length = %i, type = %i\n", message_address, remaining_length, message_type);
+		//printf("Received message header: address = %i, length = %i, type = %i\n", message_address, remaining_length, message_type);
 		
 		if(message_type == 5) // PINGREQ
 		{
-			printf("Received PINGREQ\n");
+			//printf("Received PINGREQ\n");
 		}
 		else if(message_type == 6)
 		{
-			printf("Received PINGRESP\n");
+			//printf("Received PINGRESP\n");
 		}
 	}
 	else
@@ -250,7 +251,7 @@ void mqtt_read(char received_byte)
 			{
 				message_connack_return_code = received_byte; // Return Code
 				
-				printf("CONNACK: return code = %i\n", message_connack_return_code);
+				//printf("CONNACK: return code = %i\n", message_connack_return_code);
 				
 				break;
 			}
@@ -258,7 +259,7 @@ void mqtt_read(char received_byte)
 			{
 				if(received_byte_index - 3 == 0)
 				{
-					// printf("FLAGS: %i\n", received_byte); // Flags
+					// //printf("FLAGS: %i\n", received_byte); // Flags
 					
 					message_publish_flags = received_byte;
 				}
@@ -278,7 +279,7 @@ void mqtt_read(char received_byte)
 					{
 						message_publish_message_data[message_publish_message_data_length++] = 0; // Message Data Terminator ('\0')
 						
-						printf("PUBLISH: flags = %i, topic id = %i, message data = '%s'\n", message_publish_flags, message_publish_topic_id, message_publish_message_data);
+						//printf("PUBLISH: flags = %i, topic id = %i, message data = '%s'\n", message_publish_flags, message_publish_topic_id, message_publish_message_data);
 					}
 				}
 				
@@ -297,14 +298,14 @@ void mqtt_read(char received_byte)
 					
 					if(received_byte_index + 1 == remaining_length)
 					{
-						printf("SUBACK: topic ids = [ ");
+						//printf("SUBACK: topic ids = [ ");
 						
 						for(i = 0; i < message_suback_topic_ids_length; i++)
 						{
-							printf("%i ", message_suback_topic_ids[i]);
+							//printf("%i ", message_suback_topic_ids[i]);
 						}
 						
-						printf("]\n");
+						//printf("]\n");
 					}
 				}
 			}
@@ -327,6 +328,6 @@ void mqtt_read(char received_byte)
 		message_publish_message_data_length = 0;
 		message_suback_topic_ids_length = 0;
 		
-		printf("Resetted.\n");
+		//printf("Resetted.\n");
 	}
 }
