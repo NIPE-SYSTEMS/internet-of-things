@@ -27,8 +27,11 @@ typedef struct
 	void *function_pointer;
 } mqtt_sub_topics_t;
 
-void mqtt_output_connect(char *buffer, unsigned char *offset, unsigned int keep_alive, char *clientId);
-void mqtt_output_publish(char *buffer, unsigned char *offset, char retain, unsigned int topic_id, char *message_data);
-void mqtt_output_subscribe(char *buffer, unsigned char *offset, mqtt_sub_topics_t *sub_topics, unsigned char sub_topics_length);
+void mqtt_write_connect(char *buffer, unsigned char *offset, unsigned int keep_alive, char *clientId);
+void mqtt_write_publish(char *buffer, unsigned char *offset, char retain, unsigned int topic_id, char *message_data);
+void mqtt_write_subscribe(char *buffer, unsigned char *offset, mqtt_sub_topics_t *sub_topics, unsigned char sub_topics_length);
+void mqtt_write_pingreq(char *buffer, unsigned char *offset);
+void mqtt_write_pingresp(char *buffer, unsigned char *offset);
+void mqtt_read(char received_byte);
 
 #endif /* __NODE_MQTT_SN_H__ */

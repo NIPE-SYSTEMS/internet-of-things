@@ -36,29 +36,67 @@ void print_byte(char byte)
  */
 int main(void)
 {
-	char buffer[256];
-	unsigned char offset = 0;
-	unsigned int i = 0;
-	mqtt_sub_topics_t sub_topics[] =
-	{
-		{ "Topic 1", NULL },
-		{ "Topic 2", NULL }
-	};
-	unsigned char sub_topics_length = sizeof(sub_topics) / sizeof(sub_topics[0]);
+	// char buffer[256];
+	// unsigned char offset = 0;
+	// unsigned int i = 0;
+	// mqtt_sub_topics_t sub_topics[] =
+	// {
+	// 	{ "Topic 1", 0, NULL },
+	// 	{ "Topic 2", 0, NULL }
+	// };
+	// unsigned char sub_topics_length = sizeof(sub_topics) / sizeof(sub_topics[0]);
 	
-	// initialize buffer
-	for(i = 0; i < 256; i++)
-	{
-		buffer[i] = 0;
-	}
+	// // initialize buffer
+	// for(i = 0; i < 256; i++)
+	// {
+	// 	buffer[i] = 0;
+	// }
 	
-	mqtt_output_pingreq(buffer, &offset);
+	// mqtt_write_pingreq(buffer, &offset);
 	
-	// output buffer
-	for(i = 0; i < offset; i++)
-	{
-		print_byte(buffer[i]);
-	}
+	// // output buffer
+	// for(i = 0; i < offset; i++)
+	// {
+	// 	print_byte(buffer[i]);
+	// }
+	
+	// CONNACK parsing
+	mqtt_read(16);
+	mqtt_read(4);
+	mqtt_read(0x01);
+	mqtt_read(0x01);
+	
+	// PUBLISH parsing
+	mqtt_read(16);
+	mqtt_read(9);
+	mqtt_read(0x02);
+	mqtt_read(0x01);
+	mqtt_read(0x01);
+	mqtt_read(0x00);
+	mqtt_read('a');
+	mqtt_read('b');
+	mqtt_read('c');
+	
+	// SUBACK parsing
+	mqtt_read(16);
+	mqtt_read(9);
+	mqtt_read(0x04);
+	mqtt_read(0x16);
+	mqtt_read(0x00);
+	mqtt_read(0x01);
+	mqtt_read(0x00);
+	mqtt_read(0x01);
+	mqtt_read(0x03);
+	
+	// PINGREQ parsing
+	mqtt_read(16);
+	mqtt_read(3);
+	mqtt_read(0x05);
+	
+	// PINGRESP parsing
+	mqtt_read(16);
+	mqtt_read(3);
+	mqtt_read(0x06);
 	
 	return 0;
 }
