@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 // #include <string.h>
-#include "node-mqtt-sn.h"
+#include "node-mqtt-subset.h"
 
 /**
  * Prints a single byte as decimal and binary byte. Also the character is
@@ -36,35 +36,29 @@ void print_byte(char byte)
  */
 int main(void)
 {
-	printf("[start] ADVERTISE:\n");
+	char buffer[256];
+	unsigned char offset = 0;
+	unsigned int i = 0;
+	mqtt_sub_topics_t sub_topics[] =
+	{
+		{ "Topic 1", NULL },
+		{ "Topic 2", NULL }
+	};
+	unsigned char sub_topics_length = sizeof(sub_topics) / sizeof(sub_topics[0]);
 	
-	// ADVERTISE
-	mqtt_parse_byte(0b00000101); // Message Length
-	mqtt_parse_byte(0b00000000); // Message Type
-	mqtt_parse_byte(0b00000010); // GwId
-	mqtt_parse_byte(0b00000010); // Duration << 8
-	mqtt_parse_byte(0b00000010); // Duration
+	// initialize buffer
+	for(i = 0; i < 256; i++)
+	{
+		buffer[i] = 0;
+	}
 	
-	printf("[start] SEARCHGW:\n");
+	mqtt_output_pingreq(buffer, &offset);
 	
-	// SEARCHGW
-	mqtt_parse_byte(0b00000011); // Message Length
-	mqtt_parse_byte(0b00000001); // Message Type
-	mqtt_parse_byte(0b00001000); // Radius
-	
-	printf("[start] GWINFO:\n");
-	
-	// GWINFO
-	mqtt_parse_byte(0b00001010); // Message Length
-	mqtt_parse_byte(0b00000010); // Message Type
-	mqtt_parse_byte(0b00001111); // GwId
-	mqtt_parse_byte('A'); // GwAdd
-	mqtt_parse_byte('d'); // GwAdd
-	mqtt_parse_byte('d'); // GwAdd
-	mqtt_parse_byte('r'); // GwAdd
-	mqtt_parse_byte('e'); // GwAdd
-	mqtt_parse_byte('s'); // GwAdd
-	mqtt_parse_byte('s'); // GwAdd
+	// output buffer
+	for(i = 0; i < offset; i++)
+	{
+		print_byte(buffer[i]);
+	}
 	
 	return 0;
 }

@@ -122,7 +122,7 @@ void mqtt_parse_byte(char byte)
 			}
 			case MQTT_SN_MSG_TYPE_CONNECT:
 			{
-				printf("CONNECT not implemented.\n");
+				printf("CONNECT is ignored.\n");
 				
 				break;
 			}

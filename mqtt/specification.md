@@ -109,7 +109,7 @@ The *CONNACK* message is sent by a gateway to notify the client that the *CONNEC
 
 The *Return Code* field is a 1 byte long field. Its number represents a meaning of the transceiver.
 
-| Return Code Value | Meaning                           |
+| Return Code value | Meaning                           |
 |-------------------|-----------------------------------|
 | 0x00              | Accepted                          |
 | 0x01              | Rejected: invalid CONNECT message |
